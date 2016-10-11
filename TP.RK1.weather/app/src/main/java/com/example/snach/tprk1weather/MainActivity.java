@@ -19,7 +19,7 @@ import ru.mail.weather.lib.WeatherUtils;
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = MainActivity.class.getSimpleName();
-    final String ACTION = "WEATHER_CHANGED";
+    //final String ACTION = "WEATHER_CHANGED";
     private BroadcastReceiver receiver;
     private TextView textDegree;
     private TextView textDescription;
@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     private City city = City.VICE_CITY;
     WeatherStorage weatherStorage;
+    private Button btnCity;
     //weatherStorage.setCurrentCity(city);
 
 
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         city = WeatherStorage.getInstance(MainActivity.this).getCurrentCity();
         Log.d(TAG, "onCreate");
 
-        Button btnCity = (Button) findViewById(R.id.btn_viceCity);
+        btnCity = (Button) findViewById(R.id.btn_viceCity);
         btnCity.setText(city.toString());
 
         btnCity.setOnClickListener(new View.OnClickListener() {
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         getWeatherInfo(weatherStorage.getCurrentCity());
-        IntentFilter filter = new IntentFilter(ACTION);
+        IntentFilter filter = new IntentFilter(MyIntentService.ACTION);
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 getWeatherInfo(weatherStorage.getCurrentCity());
             }
         };
-        registerReceiver(receiver, filter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
     }
 
     private void startCityActivity() {
@@ -109,26 +110,29 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, city.toString());
         Weather weather = weatherStorage.getLastSavedWeather(city);
         // Log.d(TAG,"Weather " + weather);
-        try {
-            if (!weather.getDescription().isEmpty()) {
-
-
-                textError.setText("");
-                Integer temp = weather.getTemperature();
-                textDegree.setText(temp.toString() + "°C");
-                textDescription.setText(weather.getDescription());
-                
-            }
-        } catch (NullPointerException e) {
+        if (weather == null) {
             textDescription.setText("");
             textDegree.setText("");
             textError.setText("В хранилище нет погоды для этого города, нажмите \"Обновлять в фоне\"");
+        } else
+
+        //if (!weather.getDescription().isEmpty())
+        {
+
+
+            textError.setText("");
+            Integer temp = weather.getTemperature();
+            textDegree.setText(temp.toString() + "°C");
+            textDescription.setText(weather.getDescription());
+            btnCity.setText(city.toString());
+
         }
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(receiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
     }
 }

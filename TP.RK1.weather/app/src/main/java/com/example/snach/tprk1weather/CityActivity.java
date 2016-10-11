@@ -30,7 +30,7 @@ public class CityActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 WeatherStorage.getInstance(CityActivity.this).setCurrentCity(City.VICE_CITY);
-                startMainActivity();
+                finish();
             }
         });
 
@@ -39,7 +39,7 @@ public class CityActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 WeatherStorage.getInstance(CityActivity.this).setCurrentCity(City.RACCOON_CITY);
-                startMainActivity();
+                finish();
 
             }
         });
@@ -50,7 +50,7 @@ public class CityActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 WeatherStorage.getInstance(CityActivity.this).setCurrentCity(City.SPRINGFIELD);
-                startMainActivity();
+                finish();
             }
         });
 
@@ -60,7 +60,7 @@ public class CityActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 WeatherStorage.getInstance(CityActivity.this).setCurrentCity(City.SILENT_HILL);
-                startMainActivity();
+                finish();
             }
         });
 
@@ -70,16 +70,10 @@ public class CityActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 WeatherStorage.getInstance(CityActivity.this).setCurrentCity(City.SOUTH_PARK);
-                startMainActivity();
+                finish();
             }
         });
 
-
-
     }
 
-    private void startMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
 }
